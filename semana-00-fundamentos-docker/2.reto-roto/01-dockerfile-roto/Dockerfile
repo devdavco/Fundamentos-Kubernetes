@@ -12,4 +12,6 @@ COPY index.html /usr/share/nginx/html/index.html
 
 EXPOSE 80
 
-CMD ["nginx", "-g", "daemon off;"]
+# -g envía una directiva global y "daemon off;" mantiene nginx en primer plano como proceso principal (PID 1).
+# Así Docker no da por terminado el contenedor y este sigue en ejecución.
+CMD ["nginx", "-g", "daemon off;"] 
