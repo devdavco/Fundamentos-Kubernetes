@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://github.com https://avatars.githubusercontent.com; connect-src 'self' https://api.github.com; object-src 'none'; base-uri 'self';" />
   <title>Tarjeta de Portafolio KubeCafé — Cloud Native Medellín</title>
   <style>
     :root {
@@ -149,7 +150,8 @@
 
   <script>
     const params = new URLSearchParams(window.location.search);
-    const user = (params.get('user') || 'tripulante').trim();
+    const rawUser = (params.get('user') || 'tripulante').trim();
+    const user = /^[a-zA-Z0-9](?:[a-zA-Z0-9]|-(?=[a-zA-Z0-9])){0,38}$/.test(rawUser) ? rawUser : 'tripulante';
     const nombre = (params.get('nombre') || user).trim();
     const rol = (params.get('rol') || 'Tripulante Cloud Native').trim();
     const rango = (params.get('rango') || '⛵ Marinero').trim();
@@ -158,7 +160,22 @@
     const bitacoras = (params.get('bitacoras') || '0').trim();
     const semanasRaw = (params.get('semanas') || '').trim();
     const semanas = semanasRaw ? semanasRaw.split(',').map(s => s.trim()).filter(Boolean) : [];
-    const portfolioUrl = params.get('portfolio') || `https://github.com/edwinbermudez91/Fundamentos-Kubernetes/tree/main/aportes-comunidad/soluciones-retos/${encodeURIComponent(user)}`;
+    const defaultPortfolioUrl = `https://github.com/edwinbermudez91/Fundamentos-Kubernetes/tree/main/aportes-comunidad/soluciones-retos/${encodeURIComponent(user)}`;
+    function sanitizeGithubPortfolioUrl(rawUrl) {
+      if (!rawUrl) return defaultPortfolioUrl;
+      try {
+        const parsed = new URL(rawUrl);
+        if (
+          parsed.protocol === 'https:' &&
+          parsed.hostname === 'github.com' &&
+          parsed.pathname.startsWith('/edwinbermudez91/Fundamentos-Kubernetes/')
+        ) {
+          return parsed.href;
+        }
+      } catch (_) {}
+      return defaultPortfolioUrl;
+    }
+    const portfolioUrl = sanitizeGithubPortfolioUrl(params.get('portfolio'));
     const linkedinUrl = (params.get('linkedin') || '').trim();
     const redesRaw = (params.get('redes') || '').trim();
     const extraRedes = redesRaw ? redesRaw.split(',').map(s => s.trim()).filter(Boolean) : [];

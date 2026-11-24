@@ -1,0 +1,6 @@
+apiVersion: v2
+name: reto-03-chart
+description: Reto 03 de Helm con indentación rota en resources
+type: application
+version: 0.1.0
+appVersion: "1.0.0"

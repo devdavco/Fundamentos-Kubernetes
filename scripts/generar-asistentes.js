@@ -65,11 +65,11 @@ const WEEK_METADATA = {
     skills: 'Liveness/Readiness Probes, Resource Requests/Limits y control de acceso RBAC'
   },
   'semana-06': {
-    title: '🎓 Semana 06: Empaquetado con Helm y Proyecto Final KubeCafé',
-    shortBadge: '🎓_Helm_&_Arquitectura_K8s',
+    title: '⚓ Semana 06: Empaquetado y Despliegues con Helm',
+    shortBadge: '⚓_Helm_Charts_&_Releases',
     color: 'EC4899',
     logo: 'helm',
-    skills: 'Helm Charts, plantillas parametrizadas y despliegue multicapa de alta disponibilidad'
+    skills: 'Helm Charts, Go templates, values.yaml, helm lint/test y rollbacks'
   }
 };
 
@@ -582,6 +582,164 @@ const CHALLENGE_VALIDATORS = {
               (/menu\.html:/.test(code) && /key:\s*menu\.html\b/.test(code)))
           );
         })
+    }
+  ],
+  'semana-05': [
+    {
+      id: '01',
+      name: '01-liveness-probe-ruta-rota',
+      validate: files =>
+        files.some(f => {
+          const code = stripComments(f.content);
+          const isReto01 = /reto-?01-probe/.test(code) || /0?1/.test(f.relPath);
+          return (
+            isReto01 &&
+            /kind:\s*Pod/.test(code) &&
+            /livenessProbe:/.test(code) &&
+            /path:\s*\/\s*$/m.test(code) &&
+            !code.includes('ruta-inexistente-999')
+          );
+        })
+    },
+    {
+      id: '02',
+      name: '02-pod-oomkilled-limite-bajo',
+      validate: files =>
+        files.some(f => {
+          const code = stripComments(f.content);
+          const isReto02 = /reto-?02-oom/.test(code) || /0?2/.test(f.relPath);
+          const limMatch = code.match(/limits:[\s\S]*?memory:\s*"?(\d+)(Mi|Gi)"?/i);
+          if (!isReto02 || !/kind:\s*Pod/.test(code) || !limMatch) return false;
+          const val = parseInt(limMatch[1], 10);
+          const unit = limMatch[2].toLowerCase();
+          const mb = unit === 'gi' ? val * 1024 : val;
+          return mb >= 32;
+        })
+    },
+    {
+      id: '03',
+      name: '03-security-context-root-bloqueado',
+      validate: files =>
+        files.some(f => {
+          const code = stripComments(f.content);
+          const isReto03 = /reto-?03-nonroot/.test(code) || /0?3/.test(f.relPath);
+          const hasUnprivileged =
+            /nginxinc\/nginx-unprivileged/i.test(code) && /containerPort:\s*8080\b/.test(code);
+          const hasNonZeroUser = /runAsUser:\s*[1-9]\d*/.test(code);
+          return isReto03 && /runAsNonRoot:\s*true/.test(code) && (hasUnprivileged || hasNonZeroUser);
+        })
+    },
+    {
+      id: '04',
+      name: '04-rbac-permisos-insuficientes',
+      validate: files =>
+        files.some(f => {
+          const code = stripComments(f.content);
+          const isReto04 = /auditor-reto-04|auditor-pods-role/.test(code) || /0?4/.test(f.relPath);
+          return (
+            isReto04 &&
+            /kind:\s*Role\b/.test(code) &&
+            /resources:\s*\[[^\]]*pods/i.test(code) &&
+            /verbs:\s*\[[^\]]*get/i.test(code) &&
+            /verbs:\s*\[[^\]]*list/i.test(code)
+          );
+        })
+    }
+  ],
+  'semana-06': [
+    {
+      id: '01',
+      name: '01-chart-metadata-roto',
+      validate: files =>
+        files.some(f => {
+          const code = stripComments(f.content);
+          const isChart = /chart\.ya?ml$/i.test(f.relPath) || /reto-01-chart/.test(code);
+          return (
+            isChart &&
+            /apiVersion:\s*v2\b/.test(code) &&
+            /version:\s*"?\d+\.\d+\.\d+"?/.test(code)
+          );
+        })
+    },
+    {
+      id: '02',
+      name: '02-template-values-roto',
+      validate: files =>
+        files.some(f => {
+          const code = stripComments(f.content);
+          const isTpl = /deployment\.ya?ml$/i.test(f.relPath) || /reto-02/.test(code);
+          return (
+            isTpl &&
+            /\.Values\.image\.tag/.test(code) &&
+            !/\.Values\.imagen\.tag/.test(code)
+          );
+        })
+    },
+    {
+      id: '03',
+      name: '03-template-indentacion-nindent',
+      validate: files =>
+        files.some(f => {
+          const code = stripComments(f.content);
+          const isTpl = /deployment\.ya?ml$/i.test(f.relPath) || /reto-03/.test(code);
+          return isTpl && /toYaml\s+\.Values\.resources\s*\|\s*nindent\s+\d+/.test(code);
+        })
+    },
+    {
+      id: '04',
+      name: '04-service-port-mismatch',
+      validate: files => {
+        const fixedSvc = files.some(f => {
+          const code = stripComments(f.content);
+          return /kind:\s*Service/.test(code) && /app:\s*reto-04-web\b/.test(code);
+        });
+        const fixedValues = files.some(f => {
+          const code = stripComments(f.content);
+          return /values\.ya?ml$/i.test(f.relPath) && /targetPort:\s*80\b/.test(code);
+        });
+        const directPort = files.some(f => {
+          const code = stripComments(f.content);
+          return /kind:\s*Service/.test(code) && /targetPort:\s*80\b/.test(code);
+        });
+        return fixedSvc && (fixedValues || directPort);
+      }
+    },
+    {
+      id: '05',
+      name: '05-helm-hook-test-roto',
+      validate: files =>
+        files.some(f => {
+          const code = stripComments(f.content);
+          return (
+            /helm\.sh\/hook["']?:\s*test/.test(code) &&
+            !code.includes('9999') &&
+            (/\.Values\.service\.port/.test(code) || /:80\b/.test(code))
+          );
+        })
+    },
+    {
+      id: '06',
+      name: '06-helm-cli-upgrade-rollback',
+      validate: files => {
+        const fixedValues = files.some(f => {
+          const code = stripComments(f.content);
+          return (
+            /values-prod\.ya?ml$/i.test(f.relPath) &&
+            /tag:\s*["']?(alpine|latest|1\.\d+)/.test(code) &&
+            !code.includes('version-fantasma-999')
+          );
+        });
+        const hasCliCommands = files.some(f => {
+          const code = f.content;
+          return (
+            /helm\s+install\b/.test(code) &&
+            /helm\s+upgrade\b/.test(code) &&
+            /helm\s+history\b/.test(code) &&
+            /helm\s+rollback\b/.test(code)
+          );
+        });
+        return fixedValues && hasCliCommands;
+      }
     }
   ]
 };
@@ -1170,11 +1328,11 @@ function buildSocialBadgesString(entry) {
 
 function buildStudentRow(entry, rankPosition) {
   const user = cleanGithubUser(entry.github);
-  const nombre = (entry.nombre || user).replace(/\|/g, '').replace(/\r?\n/g, ' ').trim();
-  const rol = (entry.rol || 'Tripulante de la Comunidad').replace(/\|/g, '/').replace(/\r?\n/g, ' ').trim();
+  const nombre = sanitizeText((entry.nombre || user).replace(/\|/g, '').replace(/\r?\n/g, ' '));
+  const rol = sanitizeText((entry.rol || 'Tripulante de la Comunidad').replace(/\|/g, '/').replace(/\r?\n/g, ' '));
   const rango = (entry.rango || '⛵ Marinero').trim();
   const progreso = entry.progresoTexto || `**${entry.puntos || 10} XP** (Registro inicial)`;
-  const motivacion = (entry.motivacion || 'Aprender y compartir en la comunidad Cloud Native Medellín.').replace(/\|/g, '').replace(/\r?\n/g, ' ').trim();
+  const motivacion = sanitizeText((entry.motivacion || 'Aprender y compartir en la comunidad Cloud Native Medellín.').replace(/\|/g, '').replace(/\r?\n/g, ' '));
 
   let medal = `#${rankPosition}`;
   if (entry.puntos > 10) {
@@ -1197,7 +1355,7 @@ function buildReadmeMosaicSection(students, instructorsList = []) {
     const cells = chunk.map((entry, idx) => {
       const pos = i + idx + 1;
       const user = cleanGithubUser(entry.github);
-      const fullName = (entry.nombre || user).replace(/<[^>]*>/g, '').trim();
+      const fullName = sanitizeText(entry.nombre || user);
       const parts = fullName.split(/\s+/);
       const shortName = parts.length > 2 ? `${parts[0]} ${parts[1]}` : fullName;
       const rango = (entry.rango || '⛵ Marinero').trim();
@@ -1277,7 +1435,7 @@ function buildReadmePodiumSection(students) {
   const medals = ['🥇 #1', '🥈 #2', '🥉 #3', '🏅 #4', '🏅 #5'];
   const cells = top5.map((entry, idx) => {
     const user = cleanGithubUser(entry.github);
-    const fullName = (entry.nombre || user).replace(/<[^>]*>/g, '').trim();
+    const fullName = sanitizeText(entry.nombre || user);
     const parts = fullName.split(/\s+/);
     const shortName = parts.length > 2 ? `${parts[0]} ${parts[1]}` : fullName;
     const rango = (entry.rango || '⛵ Marinero').trim();

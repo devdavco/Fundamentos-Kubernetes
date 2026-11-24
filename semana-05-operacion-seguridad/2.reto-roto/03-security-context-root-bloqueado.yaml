@@ -1,0 +1,15 @@
+# 💥 Reto 03: runAsNonRoot bloquea imagen que arranca como root
+# Objetivo: La política exige 'runAsNonRoot: true', pero nginx:alpine arranca como root (UID 0).
+# Pista: Cambia la imagen a 'nginxinc/nginx-unprivileged:alpine' (puerto 8080) o agrega 'runAsUser: 10001' con una imagen compatible como busybox/python.
+apiVersion: v1
+kind: Pod
+metadata:
+  name: reto-03-nonroot
+spec:
+  securityContext:
+    runAsNonRoot: true
+  containers:
+    - name: web
+      image: nginx:alpine
+      ports:
+        - containerPort: 80

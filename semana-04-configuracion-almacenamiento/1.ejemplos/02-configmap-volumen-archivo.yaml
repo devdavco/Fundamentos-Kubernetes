@@ -20,6 +20,28 @@ data:
     </body>
     </html>
 ---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kubecafe-nginx-conf
+data:
+  default.conf: |
+    server {
+        listen 80;
+        server_name localhost;
+
+        location / {
+            root /usr/share/nginx/html;
+            index index.html;
+            add_header X-KubeCafe-Config "ConfigMap-Nginx" always;
+        }
+
+        location /healthz {
+            default_type text/plain;
+            return 200 "OK - Nginx configurado desde ConfigMap\n";
+        }
+    }
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -43,19 +65,26 @@ spec:
             - name: menu-vol
               mountPath: /usr/share/nginx/html
               readOnly: true
+            - name: nginx-conf-vol
+              mountPath: /etc/nginx/conf.d
+              readOnly: true
       volumes:
         - name: menu-vol
           configMap:
             name: kubecafe-menu-html
+        - name: nginx-conf-vol
+          configMap:
+            name: kubecafe-nginx-conf
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: menu-config-svc
 spec:
-  type: ClusterIP
+  type: NodePort
   selector:
     app: menu-config-web
   ports:
     - port: 80
       targetPort: 80
+      nodePort: 30084

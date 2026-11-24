@@ -1,0 +1,12 @@
+# 💥 Reto 04: Service con selector y targetPort desalineados
+# Pista: El Deployment tiene label 'app: reto-04-web' y Nginx escucha en el puerto 80 (revisa values.yaml).
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-reto-04-svc
+spec:
+  selector:
+    app: reto-04-equivocado
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.targetPort }}

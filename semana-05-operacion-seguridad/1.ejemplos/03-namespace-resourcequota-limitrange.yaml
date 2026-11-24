@@ -1,0 +1,44 @@
+# 🏢 Lab 3: Namespace con ResourceQuota y LimitRange
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: kubecafe-sucursal
+---
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: cuota-sucursal
+  namespace: kubecafe-sucursal
+spec:
+  hard:
+    pods: "4"
+    requests.cpu: "500m"
+    requests.memory: "256Mi"
+    limits.cpu: "1"
+    limits.memory: "512Mi"
+---
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: limites-defecto-sucursal
+  namespace: kubecafe-sucursal
+spec:
+  limits:
+    - type: Container
+      defaultRequest:
+        cpu: "50m"
+        memory: "64Mi"
+      default:
+        cpu: "150m"
+        memory: "128Mi"
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: barista-con-limites
+  namespace: kubecafe-sucursal
+spec:
+  containers:
+    - name: app
+      image: busybox:1.36
+      command: ["sh", "-c", "sleep 3600"]

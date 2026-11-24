@@ -1,0 +1,23 @@
+# 💥 Reto 03: Falta nindent al inyectar resources con toYaml
+# Pista: Agrega '| nindent 12' dentro de {{ toYaml .Values.resources }} para que quede bien indentado.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-reto-03
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: reto-03
+  template:
+    metadata:
+      labels:
+        app: reto-03
+    spec:
+      containers:
+        - name: web
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          ports:
+            - containerPort: 80
+          resources:
+            {{- toYaml .Values.resources }}

@@ -1,0 +1,32 @@
+# 💥 Reto 04: RBAC con permisos insuficientes y RoleBinding mal enlazado
+# Objetivo: El ServiceAccount 'auditor-reto-04' debe poder hacer 'get' y 'list' de 'pods'.
+# Pista: El Role tiene el recurso equivocado ('configmaps') y el verbo 'create' en lugar de 'pods' con ['get', 'list'].
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: auditor-reto-04
+  namespace: default
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: auditor-pods-role
+  namespace: default
+rules:
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    verbs: ["create"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: auditor-pods-binding
+  namespace: default
+subjects:
+  - kind: ServiceAccount
+    name: auditor-reto-04
+    namespace: default
+roleRef:
+  kind: Role
+  name: auditor-pods-role
+  apiGroup: rbac.authorization.k8s.io

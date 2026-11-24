@@ -50,109 +50,218 @@ kubectl wait --for=condition=ready pod/barista-config-env --timeout=60s
 > pod/barista-config-env condition met
 > ```
 
-### Paso 2: Inspecciona el `ConfigMap` y verifica los logs del Pod
+### Paso 2: Lista y accede al contenido del `ConfigMap`
 ```bash
-kubectl get configmap kubecafe-config
+# Listar todos los ConfigMaps del namespace (forma corta: cm)
+kubectl get configmaps
+kubectl get cm
+
+# Ver detalles y claves del ConfigMap
+kubectl describe configmap kubecafe-config
+
+# Acceder al contenido completo en formato YAML
+kubectl get configmap kubecafe-config -o yaml
+```
+> 💡 **Respuesta esperada (`describe` / `-o yaml`):** Verás las 4 claves definidas en `data`: `NOMBRE_LOCAL`, `MONEDA`, `PRECIO_TINTO` y `MODO_DEBUG`.
+
+### Paso 3: Inspecciona el Pod con `describe`, `logs` y `exec`
+```bash
+# 1. Ver en el Pod que las variables están conectadas al ConfigMap
+kubectl describe pod barista-config-env
+
+# 2. Ver la salida impresa al iniciar el contenedor
 kubectl logs barista-config-env
+
+# 3. Validar las variables directamente dentro del contenedor con exec
+kubectl exec barista-config-env -- env | grep -E "NOMBRE_LOCAL|MONEDA|PRECIO_TINTO|MODO_DEBUG"
+
+# (Opcional) Entrar en modo interactivo al contenedor y consultarlas manualmente
+kubectl exec -it barista-config-env -- sh
+# Dentro del Pod ejecuta: echo "$NOMBRE_LOCAL | $MONEDA | $PRECIO_TINTO" && exit
 ```
 > 💡 **Respuesta esperada:**
-> En `kubectl logs barista-config-env` verás que el contenedor leyó automáticamente las variables desde `kubecafe-config`:
+> - En `kubectl describe pod barista-config-env` verás la sección `Environment Variables from: kubecafe-config ConfigMap`.
+> - En `kubectl logs` y `kubectl exec` confirmarás los valores reales dentro del contenedor:
 > ```text
-> === Configuración de KubeCafé Medellín ===
-> Moneda: COP | Precio Tinto: 3500 | Debug: false
+> NOMBRE_LOCAL=KubeCafé Medellín
+> MONEDA=COP
+> PRECIO_TINTO=3500
+> MODO_DEBUG=false
 > ```
 
 ---
 
-## 📄 Laboratorio 2: `ConfigMap` montado como Archivo en Nginx
+## 📄 Laboratorio 2: `ConfigMap` para Web HTML, Config de Nginx y `NodePort`
 
 ### 💡 ¿Qué aprenderás?
-Un `ConfigMap` también puede montarse como un **archivo real** dentro de una carpeta del contenedor (`volumeMounts`). Aquí Nginx sirve su página `index.html` directamente desde un `ConfigMap`, sin necesidad de crear una imagen Docker nueva.
+Un `ConfigMap` también puede montarse como **archivos reales** dentro del contenedor (`volumeMounts`). Aquí usamos **dos ConfigMaps** sin reconstruir la imagen:
+- `kubecafe-menu-html` → monta `index.html` en `/usr/share/nginx/html`.
+- `kubecafe-nginx-conf` → monta `default.conf` en `/etc/nginx/conf.d` (agrega el header `X-KubeCafe-Config` y el endpoint `/healthz`).
+- Y exponemos el servicio con **`type: NodePort`** en el puerto **`30084`**.
 
 ```mermaid
 flowchart TD
     L2_CM["📄 ConfigMap: kubecafe-menu-html\n(index.html)"] -->|"volumeMounts:\n/usr/share/nginx/html"| L2_POD["🌐 Pod Nginx\nmenu-config-web"]
-    L2_SVC["🤵 Service: menu-config-svc :80"] --> L2_POD
+    L2_CONF["⚙️ ConfigMap: kubecafe-nginx-conf\n(default.conf)"] -->|"volumeMounts:\n/etc/nginx/conf.d"| L2_POD
+    L2_SVC["🤵 Service NodePort: menu-config-svc\n:80 → NodePort :30084"] --> L2_POD
 
     style L2_CM fill:#0284c7,color:#fff
+    style L2_CONF fill:#7c3aed,color:#fff
     style L2_POD fill:#16a34a,color:#fff
     style L2_SVC fill:#2563eb,color:#fff
 ```
 
-### Paso 1: Despliega Nginx con el `ConfigMap` montado
+### Paso 1: Despliega Nginx con ambos `ConfigMaps` y el `Service NodePort`
 ```bash
 kubectl apply -f semana-04-configuracion-almacenamiento/1.ejemplos/02-configmap-volumen-archivo.yaml
 kubectl wait --for=condition=ready pod -l app=menu-config-web --timeout=60s
+kubectl get configmaps
 kubectl get pods,svc -l app=menu-config-web
 ```
 > 💡 **Respuesta esperada:**
 > ```text
 > configmap/kubecafe-menu-html created
+> configmap/kubecafe-nginx-conf created
 > deployment.apps/menu-config-web created
 > service/menu-config-svc created
-> pod/menu-config-web-... condition met
 > ```
 
-### Paso 2: Comprueba la página web servida por Nginx
-Abrimos un túnel temporal (`port-forward`) desde tu terminal hacia el servicio en el puerto `8084` y consultamos con `curl`:
+### Paso 2: Inspecciona los archivos montados (`exec`) y prueba por `NodePort` (`30084`)
 ```bash
-kubectl port-forward svc/menu-config-svc 8084:80 >/tmp/pf-8084.log 2>&1 &
-PF_PID=$!
-sleep 2
-curl -s http://localhost:8084 | grep -E "h1|li"
-kill $PF_PID
+# 1. Verificar ambos archivos montados dentro del contenedor
+kubectl exec deployment/menu-config-web -- ls -la /usr/share/nginx/html /etc/nginx/conf.d
+kubectl exec deployment/menu-config-web -- cat /etc/nginx/conf.d/default.conf
+
+# 2. Obtener la IP de un nodo y probar el Service NodePort :30084
+NODE_IP=$(kubectl get nodes -o jsonpath='{.items[0].status.addresses[?(@.type=="InternalIP")].address}')
+curl -i http://$NODE_IP:30084/healthz
+curl -s http://$NODE_IP:30084 | grep -E "h1|li"
 ```
+> 💡 *(Si estás en **macOS/Windows con Docker Desktop** y la IP interna del nodo no es alcanzable desde tu navegador, usa un túnel rápido: `kubectl port-forward svc/menu-config-svc 8084:80` y abre `http://localhost:8084` o `http://localhost:8084/healthz`).*
 > 💡 **Respuesta esperada:**
+> - En `/healthz` verás `OK - Nginx configurado desde ConfigMap`.
+> - En `/` verás el header `X-KubeCafe-Config: ConfigMap-Nginx` y el menú HTML:
 > ```html
 >       <h1>☕ Menú KubeCafé — Cargado desde ConfigMap</h1>
 >         <li>Tinto Campesino — $3.500 COP</li>
 >         <li>Espresso Doble — $5.000 COP</li>
 >         <li>Capuccino Vainilla — $7.500 COP</li>
 > ```
-> 📌 **Dato clave:** Si editas el `ConfigMap` (`kubectl edit cm kubecafe-menu-html`), Kubernetes actualiza el archivo dentro del contenedor automáticamente (~60 segundos) sin reiniciar ni reconstruir la imagen.
+> 📌 **Dato clave:** Si editas cualquiera de los dos `ConfigMaps` (`kubectl edit cm kubecafe-menu-html` o `kubecafe-nginx-conf`), Kubernetes actualiza el archivo dentro del contenedor automáticamente (~60 segundos) sin reconstruir la imagen.
+
+### Paso 3: Cambia por otro `ConfigMap` y recrea el Pod para que tome la nueva config
+Cuando quieres cambiar a un **nuevo `ConfigMap`** (por ejemplo `kubecafe-nginx-conf-v2` para una nueva versión o entorno) sin borrar el `Deployment`, actualiza la referencia del volumen en el `Deployment` para que Kubernetes **recree el Pod automáticamente**:
+
+```bash
+# 1. Crear un segundo ConfigMap con la nueva configuración de Nginx (v2)
+kubectl apply -f - <<'EOF'
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kubecafe-nginx-conf-v2
+data:
+  default.conf: |
+    server {
+        listen 80;
+        server_name localhost;
+
+        location / {
+            root /usr/share/nginx/html;
+            index index.html;
+            add_header X-KubeCafe-Config "ConfigMap-Nginx-v2" always;
+        }
+
+        location /healthz {
+            default_type text/plain;
+            return 200 "OK - Nginx v2 desde nuevo ConfigMap\n";
+        }
+    }
+EOF
+
+# 2. Cambiar el volumen del Deployment al nuevo ConfigMap (esto recrea el Pod automáticamente)
+kubectl set volume deployment/menu-config-web --add --overwrite \
+  --name=nginx-conf-vol \
+  --type=configmap \
+  --configmap-name=kubecafe-nginx-conf-v2 \
+  --mount-path=/etc/nginx/conf.d \
+  --read-only
+
+# (Tip: si en vez de cambiar de ConfigMap editas variables envFrom, fuerza la recreación con:)
+# kubectl rollout restart deployment/menu-config-web
+
+# 3. Esperar al nuevo Pod y verificar con describe + curl que tomó el nuevo ConfigMap
+kubectl rollout status deployment/menu-config-web
+kubectl describe pod -l app=menu-config-web | grep -A 3 "nginx-conf-vol"
+curl -i http://$NODE_IP:30084/healthz
+```
+> 💡 **Respuesta esperada:** Verás que nació un Pod nuevo, en `describe` aparece `Name: kubecafe-nginx-conf-v2`, y `/healthz` ahora responde **`OK - Nginx v2 desde nuevo ConfigMap`** (y `/` trae el header `X-KubeCafe-Config: ConfigMap-Nginx-v2`).
 
 ---
 
-## 🔐 Laboratorio 3: `Secret` para Credenciales Sensibles
+## 🔐 Laboratorio 3: App 3 Capas con `Secret` (Frontend ➔ Backend ➔ PostgreSQL)
 
 ### 💡 ¿Qué aprenderás?
-Los datos confidenciales (contraseñas, tokens, API Keys) **no** deben ir en `ConfigMaps`, sino en un **`Secret`**. Un `Secret` puede consumirse como variable de entorno (`secretKeyRef`) o montado como archivo de solo lectura (`readOnly: true`).
+Los datos confidenciales (contraseñas de base de datos, tokens, `API_KEY`) **no** deben ir en `ConfigMaps`, sino en un **`Secret`**. Aquí desplegamos una mini aplicación completa de **3 capas** compartiendo un mismo `Secret` (`kubecafe-receta-secreta`):
+- **Frontend (`frontend-secret-web`, `NodePort :30085`):** toma `API_KEY` del `Secret` (`secretKeyRef`) y la envía en el header `X-API-Key` cuando hace proxy a `/api/`.
+- **Backend API (`backend-api`, `ClusterIP :5000`):** monta el `Secret` como archivo (`readOnly: true` en `/etc/kubecafe/API_KEY`), valida la `X-API-Key` del Frontend y verifica conexión real con la base de datos usando `DB_USER` y `DB_PASS`.
+- **Base de datos (`db-postgres`, `ClusterIP :5432`):** arranca PostgreSQL con `POSTGRES_USER`, `POSTGRES_PASSWORD` y `POSTGRES_DB` leídos del mismo `Secret`.
 
 ```mermaid
 flowchart TD
-    L3_SEC["🔐 Secret: kubecafe-receta-secreta\n(Base64 en etcd)"] -->|"secretKeyRef (env)"| L3_POD["📦 Pod: caja-fuerte-pod"]
-    L3_SEC -->|"volumeMounts readOnly:\n/etc/kubecafe/API_KEY"| L3_POD
+    L3_SEC["🔐 Secret: kubecafe-receta-secreta\n(DB_USER, DB_PASS, POSTGRES_DB, API_KEY)"]
+    L3_SEC -->|"secretKeyRef: API_KEY\n(header X-API-Key)"| L3_FE["🌐 Frontend Nginx\nfrontend-secret-svc :30085"]
+    L3_SEC -->|"volumeMounts readOnly:\n/etc/kubecafe/API_KEY"| L3_BE["⚙️ Backend Python\nbackend-api-svc :5000"]
+    L3_SEC -->|"secretKeyRef:\nUSER / PASS / DB"| L3_DB["🗄️ PostgreSQL\ndb-postgres-svc :5432"]
+    L3_FE -->|"/api/ + X-API-Key"| L3_BE
+    L3_BE -->|"TCP :5432"| L3_DB
 
     style L3_SEC fill:#dc2626,color:#fff
-    style L3_POD fill:#16a34a,color:#fff
+    style L3_FE fill:#2563eb,color:#fff
+    style L3_BE fill:#16a34a,color:#fff
+    style L3_DB fill:#7c3aed,color:#fff
 ```
 
-### Paso 1: Crea el `Secret` y el Pod `caja-fuerte-pod`
+### Paso 1: Despliega la app de 3 capas con el `Secret`
 ```bash
 kubectl apply -f semana-04-configuracion-almacenamiento/1.ejemplos/03-secret-credenciales.yaml
-kubectl wait --for=condition=ready pod/caja-fuerte-pod --timeout=60s
+kubectl wait --for=condition=available deployment/db-postgres deployment/backend-api deployment/frontend-secret-web --timeout=120s
+kubectl get pods,svc
 ```
-> 💡 **Respuesta esperada:**
-> ```text
-> secret/kubecafe-receta-secreta created
-> pod/caja-fuerte-pod created
-> pod/caja-fuerte-pod condition met
-> ```
 
-### Paso 2: Revisa cómo guarda Kubernetes el `Secret` y qué lee el Pod
+### Paso 2: Lista e inspecciona el `Secret` y los Pods (`describe` y `exec`)
 ```bash
-# 1. Ver el Secret guardado (observa que los valores aparecen codificados en Base64):
-kubectl get secret kubecafe-receta-secreta -o yaml
+# 1. Listar Secrets y ver sus claves (sin revelar los valores)
+kubectl get secrets
+kubectl describe secret kubecafe-receta-secreta
 
-# 2. Ver los logs del Pod (Kubernetes decodifica automáticamente el Secret para el contenedor):
-kubectl logs caja-fuerte-pod
+# 2. Ver el Secret completo en Base64 y decodificar una clave puntual
+kubectl get secret kubecafe-receta-secreta -o yaml
+kubectl get secret kubecafe-receta-secreta -o jsonpath='{.data.DB_PASS}' | base64 -d && echo
+
+# 3. Ver en el Backend que las variables y el volumen secreto están conectados
+kubectl describe pod -l app=backend-api
+
+# 4. Validar dentro del Backend con exec (variables + archivo readOnly)
+kubectl exec deployment/backend-api -- env | grep -E "DB_USER|DB_PASS|POSTGRES_DB"
+kubectl exec deployment/backend-api -- cat /etc/kubecafe/API_KEY
+kubectl exec deployment/backend-api -- touch /etc/kubecafe/prueba.txt
 ```
-> 💡 **Respuesta esperada en `kubectl logs caja-fuerte-pod`:**
-> ```text
-> Usuario DB: barista_admin
-> Archivo secreto montado en /etc/kubecafe/API_KEY:
-> kc-live-987654321
+
+### Paso 3: Prueba la conexión Frontend ➔ Backend ➔ PostgreSQL por `NodePort` (`30085`)
+```bash
+NODE_IP=$(kubectl get nodes -o jsonpath='{.items[0].status.addresses[?(@.type=="InternalIP")].address}')
+
+# 1. Llamar vía Frontend (inyecta X-API-Key automáticamente desde el Secret -> HTTP 200)
+curl -s http://$NODE_IP:30085/api/status
+
+# 2. Llamar directo al Backend SIN X-API-Key (debe rechazar con HTTP 401 Unauthorized)
+kubectl exec deployment/frontend-secret-web -- wget -qO- http://backend-api-svc:5000/status || echo "Rechazado (401) sin API_KEY"
+```
+> 💡 **Respuesta esperada en `/api/status`:**
+> ```json
+> {"status": "ok", "auth": "API_KEY del Secret validada", "db": "db-postgres-svc:5432 CONECTADA", "db_user": "barista_admin", "db_name": "kubecafe"}
 > ```
+> *(En macOS/Windows con Docker Desktop también puedes abrir `http://localhost:30085` usando `kubectl port-forward svc/frontend-secret-svc 30085:80`).*
 > ⚠️ **Importante para principiantes:** Base64 (`echo -n "TintoSeguro2026!" | base64`) es codificación, **no cifrado**. En repositorios reales nunca subas contraseñas reales en texto plano; usa herramientas como *Sealed Secrets* o *External Secrets*.
 
 ---
@@ -160,9 +269,12 @@ kubectl logs caja-fuerte-pod
 ## ⏳ Laboratorio 4: `emptyDir` (Efímero) vs `hostPath` (Nodo)
 
 ### 💡 ¿Qué aprenderás?
-Por defecto, si un Pod muere o se borra, todo lo que guardó dentro de su contenedor se pierde. Aquí comparamos dos tipos de volúmenes locales:
-- **`emptyDir`:** Vive únicamente mientras exista el Pod (una bandeja temporal).
-- **`hostPath`:** Guarda los archivos en una carpeta física del nodo donde corre el Pod.
+Por defecto, si un Pod se borra, todo lo que guardó en su capa efímera desaparece. Aquí comparamos dos volúmenes locales de forma sencilla:
+
+| Volumen | Dónde guarda los datos | ¿Sobrevive si se reinicia el contenedor? | ¿Sobrevive si borras el Pod? | Limitación |
+| :--- | :--- | :---: | :---: | :--- |
+| **`emptyDir`** | Directorio temporal del Pod | ✅ Sí | ❌ **No** (se borra con el Pod) | Ideal solo para archivos temporales o compartir datos entre contenedores del mismo Pod. |
+| **`hostPath`** | Carpeta física en el **nodo** (`/tmp/kubecafe-nodo-estante`) | ✅ Sí | ✅ **Sí**, si el nuevo Pod cae en el **mismo nodo** | Si el Pod se agenda en otro `Worker Node`, verá una carpeta distinta. |
 
 ```mermaid
 flowchart TD
@@ -174,24 +286,60 @@ flowchart TD
     style L4_HP fill:#0284c7,color:#fff
 ```
 
-### Paso 1: Crea el Pod y verifica qué escribió en cada carpeta
+### Paso 1: Crea el Pod, mira en qué nodo quedó y revisa sus volúmenes (`describe` + `exec`)
 ```bash
 kubectl apply -f semana-04-configuracion-almacenamiento/1.ejemplos/04-volumen-emptydir-vs-hostpath.yaml
 kubectl wait --for=condition=ready pod/pod-almacenamiento-local --timeout=60s
+
+# 1. Ver en qué Worker Node quedó agendado el Pod
+kubectl get pod pod-almacenamiento-local -o wide
+
+# 2. Ver en el Pod cómo están declarados y montados ambos volúmenes (Mounts / Volumes)
+kubectl describe pod pod-almacenamiento-local
+
+# 3. Ver logs y entrar con exec a revisar las carpetas y los archivos creados
+kubectl logs pod-almacenamiento-local
+kubectl exec pod-almacenamiento-local -- ls -la /tmp-bandeja /nodo-estante
 kubectl exec pod-almacenamiento-local -- sh -c "cat /tmp-bandeja/pedidos.log && echo '---' && cat /nodo-estante/historial.log"
 ```
-> 💡 **Respuesta esperada:** Verás **1 fecha** en `/tmp-bandeja/pedidos.log` (`emptyDir`) y **1 fecha** en `/nodo-estante/historial.log` (`hostPath`).
+> 💡 **Respuesta esperada:**
+> - En `kubectl describe pod pod-almacenamiento-local` verás:
+> ```text
+>     Mounts:
+>       /nodo-estante from estante-nodo (rw)
+>       /tmp-bandeja from bandeja-efimera (rw)
+> Volumes:
+>   bandeja-efimera:
+>     Type:       EmptyDir (a temporary directory that shares a pod's lifetime)
+>   estante-nodo:
+>     Type:       HostPath (bare host directory volume)
+>     Path:       /tmp/kubecafe-nodo-estante
+> ```
+> - Con `exec` verás **1 fecha** en `pedidos.log` (`emptyDir`) y **1 fecha** en `historial.log` (`hostPath`):
+> ```text
+> Tue Nov 24 18:50:10 UTC 2026
+> ---
+> Tue Nov 24 18:50:10 UTC 2026
+> ```
 
 ### Paso 2: Borra el Pod, recréalo y observa la diferencia
 ```bash
 kubectl delete pod pod-almacenamiento-local
 kubectl apply -f semana-04-configuracion-almacenamiento/1.ejemplos/04-volumen-emptydir-vs-hostpath.yaml
 kubectl wait --for=condition=ready pod/pod-almacenamiento-local --timeout=60s
+kubectl get pod pod-almacenamiento-local -o wide
 kubectl exec pod-almacenamiento-local -- sh -c "cat /tmp-bandeja/pedidos.log && echo '---' && cat /nodo-estante/historial.log"
 ```
-> 💡 **Respuesta esperada:**
-> - `/tmp-bandeja/pedidos.log` (`emptyDir`) tendrá **solo 1 línea nueva** (el dato anterior se perdió al borrar el Pod).
-> - `/nodo-estante/historial.log` (`hostPath`) tendrá **2 líneas** (conservó la fecha anterior en el nodo).
+> 💡 **Respuesta esperada (si quedó en el mismo nodo):**
+> ```text
+> Tue Nov 24 18:51:02 UTC 2026
+> ---
+> Tue Nov 24 18:50:10 UTC 2026
+> Tue Nov 24 18:51:02 UTC 2026
+> ```
+> - **`/tmp-bandeja/pedidos.log` (`emptyDir`):** tiene **solo 1 línea nueva** (el archivo anterior se destruyó junto con el Pod viejo).
+> - **`/nodo-estante/historial.log` (`hostPath`):** conserva **2 líneas** (la del Pod anterior + la del Pod nuevo) porque el archivo quedó guardado en `/tmp/kubecafe-nodo-estante` del nodo.
+> - 📌 **Nota en clústeres multi-nodo (2+ workers):** si `kubectl get pod -o wide` muestra que el nuevo Pod cayó en **otro nodo distinto**, `historial.log` mostrará solo 1 línea allí porque cada nodo tiene su propio disco local. Por eso en producción usamos **`PV` / `PVC`** (Labs 5 y 6).
 
 ---
 
@@ -215,9 +363,16 @@ flowchart TD
 ### Paso 1: Crea el `PV`, el `PVC` y el Pod que los usa
 ```bash
 kubectl apply -f semana-04-configuracion-almacenamiento/1.ejemplos/05-pv-pvc-almacenamiento-persistente.yaml
+
+# 1. Listar PV y PVC y comprobar que estén en estado Bound
 kubectl get pv,pvc
+kubectl describe pvc bodega-kubecafe-pvc
+
+# 2. Esperar al Pod, revisar su montaje con describe y validar el disco con exec
 kubectl wait --for=condition=ready pod/inventario-bodega-pod --timeout=60s
+kubectl describe pod inventario-bodega-pod
 kubectl logs inventario-bodega-pod
+kubectl exec inventario-bodega-pod -- ls -la /datos
 ```
 > 💡 **Respuesta esperada en `kubectl get pv,pvc`:**
 > ```text
@@ -259,9 +414,11 @@ kubectl get storageclass
 kubectl apply -f semana-04-configuracion-almacenamiento/1.ejemplos/06-storageclass-dinamico-stateful.yaml
 kubectl wait --for=condition=available deployment/caja-persistente --timeout=90s
 
-# 3. Ver el PVC enlazado y la primera línea escrita en ventas.log:
-kubectl get pvc caja-diaria-pvc
+# 3. Ver el PVC enlazado, el PV creado automáticamente y validar con logs/exec:
+kubectl get pvc,pv
+kubectl describe pod -l app=caja-persistente
 kubectl logs deployment/caja-persistente
+kubectl exec deployment/caja-persistente -- cat /var/lib/kubecafe/ventas.log
 ```
 > 💡 **Respuesta esperada:**
 > - `caja-diaria-pvc` aparecerá en estado **`Bound`** (el clúster creó el `PV` automáticamente).

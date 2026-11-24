@@ -1,0 +1,8 @@
+# 💥 Reto 01: Chart.yaml con apiVersion y versión SemVer inválidos
+# Pista: Para Helm v3, apiVersion debe ser 'v2' y version debe seguir SemVer (ej. 0.1.0).
+apiVersion: v1
+name: reto-01-chart
+description: Reto 01 de Helm con metadatos rotos
+type: application
+version: "1.0"
+appVersion: "1.0.0"

@@ -1,0 +1,54 @@
+# 🌡️ Lab 1: Sondas de Salud (Startup, Readiness y Liveness Probes)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cafetera-probes
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cafetera-probes
+  template:
+    metadata:
+      labels:
+        app: cafetera-probes
+    spec:
+      containers:
+        - name: web
+          image: nginx:alpine
+          ports:
+            - containerPort: 80
+          command:
+            - sh
+            - -c
+            - |
+              sleep 3
+              touch /tmp/ready
+              nginx -g 'daemon off;'
+          startupProbe:
+            exec:
+              command: ["cat", "/tmp/ready"]
+            failureThreshold: 10
+            periodSeconds: 2
+          readinessProbe:
+            exec:
+              command: ["cat", "/tmp/ready"]
+            periodSeconds: 4
+            failureThreshold: 2
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            periodSeconds: 5
+            failureThreshold: 3
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cafetera-probes-svc
+spec:
+  selector:
+    app: cafetera-probes
+  ports:
+    - port: 80
+      targetPort: 80

@@ -19,6 +19,10 @@ permissions:
   contents: write
   pull-requests: write
 
+concurrency:
+  group: write-main
+  cancel-in-progress: false
+
 jobs:
   actualizar-rango:
     name: Evaluar Ejercicios y Actualizar Ranking en ASISTENTES.md
@@ -26,14 +30,14 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: 📥 Clonar repositorio
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           ref: ${{ github.ref_name }}
           fetch-depth: 0
 
       - name: 🎖️ Evaluar ejercicios completados y actualizar ranking
         id: calcular
-        uses: actions/github-script@v9
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
         env:
           INPUT_PR_NUMBER: ${{ inputs.pr_number }}
         with:
@@ -210,7 +214,7 @@ jobs:
 
       - name: 📣 Publicar reporte de evaluación y puntaje en el Pull Request
         if: steps.calcular.outputs.pr_number != '' && steps.calcular.outputs.points != ''
-        uses: actions/github-script@v9
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
         env:
           GH_USER: ${{ steps.calcular.outputs.user }}
           PR_NUMBER: ${{ steps.calcular.outputs.pr_number }}

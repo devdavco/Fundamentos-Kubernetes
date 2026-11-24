@@ -180,29 +180,29 @@
     <tr>
       <td>
         <b>🛡️ Semana 05 — Salud &amp; Seguridad</b><br/>
-        <sub><code>Liveness/Readiness</code> • <code>Quotas</code> • <code>RBAC</code></sub>
+        <a href="./semana-05-operacion-seguridad"><code>semana-05-operacion-seguridad/</code></a>
       </td>
       <td align="center">
-        <img src="https://img.shields.io/badge/Seguridad_%26_RBAC-Pr%C3%B3ximamente-64748B?style=flat-square&logo=kubernetes&logoColor=white" alt="Seguridad Próximamente"/><br/>
-        <sub><b>+40 XP</b> 🔒</sub>
+        <a href="./semana-05-operacion-seguridad"><img src="https://img.shields.io/badge/Seguridad_%26_RBAC-Disponible-F59E0B?style=flat-square&logo=kubernetes&logoColor=white" alt="Seguridad Disponible"/></a><br/>
+        <sub><b>+40 XP</b> (4 Retos + 10 Bitácora)</sub>
       </td>
       <td>
-        Sondas <code>Liveness/Readiness</code>, límites de CPU/RAM, NetworkPolicies y permisos <code>RBAC</code>.<br/>
-        <sub><a href="https://kubernetes.io/es/docs/concepts/security/">📚 Docs Security</a></sub>
+        Sondas <code>Startup/Liveness/Readiness</code>, <code>OOMKilled</code>, <code>ResourceQuotas</code>, <code>SecurityContext</code>, <code>RBAC</code> y <code>NetworkPolicies</code>.<br/>
+        <sub><a href="./semana-05-operacion-seguridad/README.md">📖 Guía</a> • <a href="./semana-05-operacion-seguridad/1.ejemplos">🧪 Ejemplos</a> • <a href="./semana-05-operacion-seguridad/2.reto-roto">💥 Retos</a></sub>
       </td>
     </tr>
     <tr>
       <td>
-        <b>🚀 Semana 06 — Helm &amp; Proyecto Final</b><br/>
-        <sub><code>Helm Charts</code> • <code>KubeCafé 3 Capas</code></sub>
+        <b>⚓ Semana 06 — Empaquetado con Helm</b><br/>
+        <a href="./semana-06-helm"><code>semana-06-helm/</code></a>
       </td>
       <td align="center">
-        <img src="https://img.shields.io/badge/Helm_&_Proyecto-Pr%C3%B3ximamente-EC4899?style=flat-square&logo=helm&logoColor=white" alt="Helm Próximamente"/><br/>
-        <sub><b>+50 XP</b> 🏆</sub>
+        <a href="./semana-06-helm"><img src="https://img.shields.io/badge/Helm_Charts-Disponible-EC4899?style=flat-square&logo=helm&logoColor=white" alt="Helm Disponible"/></a><br/>
+        <sub><b>+60 XP</b> (6 Retos + 10 Bitácora)</sub>
       </td>
       <td>
-        Empaquetado con <b>Helm Charts</b> y despliegue completo de <b>KubeCafé</b> en 3 capas.<br/>
-        <sub><a href="https://helm.sh/docs/">📚 Docs Helm</a></sub>
+        <b>Helm Charts</b>, <code>values.yaml</code>, Go templates, <code>lint</code>/<code>template</code>, <code>upgrade</code>/<code>rollback</code> y <code>helm test</code>.<br/>
+        <sub><a href="./semana-06-helm/README.md">📖 Guía</a> • <a href="./semana-06-helm/1.ejemplos">🧪 Ejemplos</a> • <a href="./semana-06-helm/2.reto-roto">💥 Retos</a></sub>
       </td>
     </tr>
     <tr>
@@ -257,6 +257,24 @@
   <tr>
     <td align="center" width="175">
       <b>🥇 #1</b><br/>
+      <a href="./aportes-comunidad/soluciones-retos/Cuburi/README.md" title="Portafolio de Yorman Agudelo (@Cuburi)">
+        <img src="https://github.com/Cuburi.png?size=120" width="68" height="68" style="border-radius: 50%;" alt="Cuburi"/><br/>
+        <b>Yorman Agudelo</b>
+      </a><br/>
+      <sub>🧭 Timonel • <b>220 XP</b></sub><br/>
+      <a href="./aportes-comunidad/soluciones-retos/Cuburi/README.md"><b>🎓 Ver Portafolio</b></a>
+    </td>
+    <td align="center" width="175">
+      <b>🥈 #2</b><br/>
+      <a href="./aportes-comunidad/soluciones-retos/eandreaja/README.md" title="Portafolio de Andrea Jaramillo (@eandreaja)">
+        <img src="https://github.com/eandreaja.png?size=120" width="68" height="68" style="border-radius: 50%;" alt="eandreaja"/><br/>
+        <b>Andrea Jaramillo</b>
+      </a><br/>
+      <sub>🧭 Timonel • <b>220 XP</b></sub><br/>
+      <a href="./aportes-comunidad/soluciones-retos/eandreaja/README.md"><b>🎓 Ver Portafolio</b></a>
+    </td>
+    <td align="center" width="175">
+      <b>🥉 #3</b><br/>
       <a href="./aportes-comunidad/soluciones-retos/Arlex0296/README.md" title="Portafolio de Arlex0296 (@Arlex0296)">
         <img src="https://github.com/Arlex0296.png?size=120" width="68" height="68" style="border-radius: 50%;" alt="Arlex0296"/><br/>
         <b>Arlex0296</b>
@@ -265,7 +283,7 @@
       <a href="./aportes-comunidad/soluciones-retos/Arlex0296/README.md"><b>🎓 Ver Portafolio</b></a>
     </td>
     <td align="center" width="175">
-      <b>🥈 #2</b><br/>
+      <b>🏅 #4</b><br/>
       <a href="./aportes-comunidad/soluciones-retos/RAVILA28/README.md" title="Portafolio de Fernando Avila (@RAVILA28)">
         <img src="https://github.com/RAVILA28.png?size=120" width="68" height="68" style="border-radius: 50%;" alt="RAVILA28"/><br/>
         <b>Fernando Avila</b>
@@ -274,31 +292,13 @@
       <a href="./aportes-comunidad/soluciones-retos/RAVILA28/README.md"><b>🎓 Ver Portafolio</b></a>
     </td>
     <td align="center" width="175">
-      <b>🥉 #3</b><br/>
-      <a href="./aportes-comunidad/soluciones-retos/Cuburi/README.md" title="Portafolio de Yorman Agudelo (@Cuburi)">
-        <img src="https://github.com/Cuburi.png?size=120" width="68" height="68" style="border-radius: 50%;" alt="Cuburi"/><br/>
-        <b>Yorman Agudelo</b>
-      </a><br/>
-      <sub>🧭 Timonel • <b>180 XP</b></sub><br/>
-      <a href="./aportes-comunidad/soluciones-retos/Cuburi/README.md"><b>🎓 Ver Portafolio</b></a>
-    </td>
-    <td align="center" width="175">
-      <b>🏅 #4</b><br/>
+      <b>🏅 #5</b><br/>
       <a href="./aportes-comunidad/soluciones-retos/juanjosegonzalezrosales/README.md" title="Portafolio de Juan José González Rosales (@juanjosegonzalezrosales)">
         <img src="https://github.com/juanjosegonzalezrosales.png?size=120" width="68" height="68" style="border-radius: 50%;" alt="juanjosegonzalezrosales"/><br/>
         <b>Juan José</b>
       </a><br/>
-      <sub>🧭 Timonel • <b>170 XP</b></sub><br/>
+      <sub>🧭 Timonel • <b>180 XP</b></sub><br/>
       <a href="./aportes-comunidad/soluciones-retos/juanjosegonzalezrosales/README.md"><b>🎓 Ver Portafolio</b></a>
-    </td>
-    <td align="center" width="175">
-      <b>🏅 #5</b><br/>
-      <a href="./aportes-comunidad/soluciones-retos/karolrojas68/README.md" title="Portafolio de Karol Rojas (@karolrojas68)">
-        <img src="https://github.com/karolrojas68.png?size=120" width="68" height="68" style="border-radius: 50%;" alt="karolrojas68"/><br/>
-        <b>Karol Rojas</b>
-      </a><br/>
-      <sub>🧭 Timonel • <b>170 XP</b></sub><br/>
-      <a href="./aportes-comunidad/soluciones-retos/karolrojas68/README.md"><b>🎓 Ver Portafolio</b></a>
     </td>
   </tr>
 </table>
@@ -317,12 +317,12 @@
 <div align="center">
 
 [![Progreso del Workshop](https://img.shields.io/badge/🚂_Estación_Actual-Semana_04_(Configuración_y_Almacenamiento)-8B5CF6?style=for-the-badge)](./semana-04-configuracion-almacenamiento)
-[![XP Desbloqueable Hoy](https://img.shields.io/badge/⚡_XP_Disponible_Hoy-220_XP_Retos_+_50_XP_Bitácoras-f59e0b?style=for-the-badge)](./ASISTENTES.md)
+[![XP Desbloqueable Hoy](https://img.shields.io/badge/⚡_XP_Disponible_Hoy-320_XP_Retos_+_70_XP_Bitácoras-f59e0b?style=for-the-badge)](./ASISTENTES.md)
 [![Abrir Simulador KubeCafé](https://img.shields.io/badge/🎮_Probar_en_Vivo-Simulador_KubeCafé-326CE5?style=for-the-badge)](https://edwinbermudez91.github.io/Fundamentos-Kubernetes/recursos/simulador-interactivo-kubernetes.html)
 [![Panel Interactivo 360](https://img.shields.io/badge/☕_Panel_360°-Las_7_Semanas_Interactivas-10B981?style=for-the-badge)](https://edwinbermudez91.github.io/Fundamentos-Kubernetes/recursos/panel-interactivo-kubecafe.html)
 
-**Progreso de la Travesía Cloud Native (5 de 7 módulos activos):**  
-`🟢 Semana 00` ━━━▶ `🟢 Semana 01` ━━━▶ `🟢 Semana 02` ━━━▶ `🟢 Semana 03` ━━━▶ `🔥 Semana 04 (ACTUAL)` ━━━▶ `⚪ Semana 05` ━━━▶ `⚪ Semana 06`
+**Progreso de la Travesía Cloud Native (7 de 7 módulos activos):**  
+`🟢 Semana 00` ━━━▶ `🟢 Semana 01` ━━━▶ `🟢 Semana 02` ━━━▶ `🟢 Semana 03` ━━━▶ `🟢 Semana 04` ━━━▶ `🟢 Semana 05` ━━━▶ `🟢 Semana 06`
 
 </div>
 
@@ -344,9 +344,9 @@ flowchart LR
         S4["💾 SEMANA 04 · EN CURSO\nConfigMaps, Secrets y PV\n☕ Especias y Bodega · +50 XP"]
     end
 
-    subgraph F4["04 • PRODUCCIÓN Y ENTREGA"]
-        S5["🛡️ SEMANA 05 · PRÓXIMAMENTE\nProbes, Recursos y RBAC\n☕ Termómetro y Carnets · +40 XP"]
-        S6["🎓 SEMANA 06 · PROYECTO FINAL\nHelm Charts y Arquitectura\n☕ Kit de Franquicia · +50 XP"]
+    subgraph F4["04 • PRODUCCIÓN Y HELM"]
+        S5["🛡️ SEMANA 05 · DISPONIBLE\nProbes, Recursos y RBAC\n☕ Termómetro y Carnets · +40 XP"]
+        S6["⚓ SEMANA 06 · DISPONIBLE\nEmpaquetado con Helm\n☕ Kit de Franquicia · +60 XP"]
     end
 
     S0 ==> S1
@@ -402,7 +402,7 @@ flowchart LR
 <summary><b>🌱 Semana 01: El Motor por Dentro y tu Primer Pod (🟢 Disponible — Gana +40 XP)</b></summary>
 <br>
 
-> ☕ **Misión en KubeCafé:** Inauguramos el local entendiendo cómo la **Oficina de Gerencia (`Control Plane`)** recibe comandas en la **Caja (`API Server`)**, las anota en el **Libro Contable (`etcd`)**, elige una **Mesa libre (`Scheduler`)** y le ordena al **Barista (`kubelet`)** servir tu primera **Bandeja (`Pod`)**.
+> ☕ **Misión en KubeCafé:** Inauguramos el local entendiendo cómo la **Oficina de Gerencia (`Control Plane`)** recibe órdenes en la **Caja (`API Server`)**, las anota en el **Libro Contable (`etcd`)**, elige una **Mesa libre (`Scheduler`)** y le ordena al **Barista (`kubelet`)** servir tu primera **Bandeja (`Pod`)**.
 
 * 🧪 **Laboratorios Prácticos ([`semana-01-arquitectura/1.ejemplos`](./semana-01-arquitectura/1.ejemplos)):**
   1. [`01-mi-primer-pod.yaml`](./semana-01-arquitectura/1.ejemplos/01-mi-primer-pod.yaml) — Tu primera bandeja servida en el clúster (`hola-medellin`).
@@ -473,11 +473,38 @@ flowchart LR
 </details>
 
 <details>
-<summary><b>🔮 Semanas 05 a 06: Vista Previa de las Próximas Estaciones de KubeCafé</b></summary>
+<summary><b>🛡️ Semana 05: Salud, Límites, Seguridad y RBAC (🟢 Disponible — Gana +40 XP)</b></summary>
 <br>
 
-* **🛡️ Semana 05 — Operación y Seguridad (`Probes`, `Limits` y `RBAC`):** Instalaremos **termómetros automáticos (`Liveness/Readiness`)**, topes de agua y electricidad por mesa (`ResourceQuotas`) y carnets de empleado con permisos estrictos (`RBAC`).
-* **🎓 Semana 06 — Empaquetado con Helm y Proyecto Final:** Crearemos el **Kit de Franquicia (`Helm Chart`)** para inaugurar sucursales completas de KubeCafé (Frontend + API + Base de Datos) con un solo comando `helm install`.
+> ☕ **Misión en KubeCafé:** Instalamos **termómetros de salud (`Startup/Readiness/Liveness Probes`)**, topes de agua y electricidad (`Limits` y `ResourceQuotas`), baristas sin privilegios (`SecurityContext`), carnets de permisos (`RBAC`) y aislamiento de red (`NetworkPolicies`).
+
+* 🧪 **Laboratorios Prácticos ([`semana-05-operacion-seguridad/1.ejemplos`](./semana-05-operacion-seguridad/1.ejemplos)):**
+  1. [`01-probes-salud-startup-liveness-readiness.yaml`](./semana-05-operacion-seguridad/1.ejemplos/01-probes-salud-startup-liveness-readiness.yaml) — Sondas de arranque, tráfico y salud.
+  2. [`02-recursos-limits-oomkilled.yaml`](./semana-05-operacion-seguridad/1.ejemplos/02-recursos-limits-oomkilled.yaml) — Simulación y diagnóstico de `OOMKilled` (`Exit Code 137`).
+  3. [`03-namespace-resourcequota-limitrange.yaml`](./semana-05-operacion-seguridad/1.ejemplos/03-namespace-resourcequota-limitrange.yaml) — Cuotas y límites por defecto por `Namespace`.
+  4. [`04-security-context-nonroot.yaml`](./semana-05-operacion-seguridad/1.ejemplos/04-security-context-nonroot.yaml) — Contenedor no-root y sistema de archivos `readOnly`.
+  5. [`05-rbac-serviceaccount-role.yaml`](./semana-05-operacion-seguridad/1.ejemplos/05-rbac-serviceaccount-role.yaml) — `ServiceAccount`, `Role`, `RoleBinding` y `kubectl auth can-i`.
+  6. [`06-networkpolicy-aislamiento.yaml`](./semana-05-operacion-seguridad/1.ejemplos/06-networkpolicy-aislamiento.yaml) — Aislamiento Pod-a-Pod con `NetworkPolicy` y Cilium.
+* 💥 **Los 4 Retos Rotos ([`semana-05-operacion-seguridad/2.reto-roto`](./semana-05-operacion-seguridad/2.reto-roto)):**
+  `01-liveness-probe-ruta-rota.yaml` • `02-pod-oomkilled-limite-bajo.yaml` • `03-security-context-root-bloqueado.yaml` • `04-rbac-permisos-insuficientes.yaml`
+* 🚀 [**Entrar a la Semana 05**](./semana-05-operacion-seguridad) | 🧪 [**Ir a los Ejemplos**](./semana-05-operacion-seguridad/1.ejemplos) | 💥 [**Resolver los Retos Rotos (+40 XP)**](./semana-05-operacion-seguridad/2.reto-roto)
+</details>
+
+<details>
+<summary><b>⚓ Semana 06: Empaquetado y Despliegues con Helm (🟢 Disponible — Gana +60 XP)</b></summary>
+<br>
+
+> ☕ **Misión en KubeCafé:** Creamos el **Kit de Franquicia (`Helm Chart`)** parametrizado con `values.yaml` para desplegar, validar (`helm lint`/`template`), actualizar (`helm upgrade`), revertir (`helm rollback`) y probar (`helm test`) sucursales en segundos.
+
+* 🧪 **Laboratorios Prácticos ([`semana-06-helm/1.ejemplos`](./semana-06-helm/1.ejemplos)):**
+  1. Repositorios y Charts públicos (`helm repo add`, `helm search`, `helm show values`).
+  2. Anatomía de [`kubecafe-chart/`](./semana-06-helm/1.ejemplos/kubecafe-chart) y `helm create`.
+  3. `helm lint`, `helm template` y despliegue por entornos (`values.yaml` vs `values-prod.yaml`).
+  4. Ciclo de vida: `helm upgrade`, `helm history` y `helm rollback`.
+  5. Pruebas automatizadas con `helm test` (`templates/tests/test-connection.yaml`).
+* 💥 **Los 6 Retos Rotos ([`semana-06-helm/2.reto-roto`](./semana-06-helm/2.reto-roto)):**
+  `01-chart-metadata-roto` • `02-template-values-roto` • `03-template-indentacion-nindent` • `04-service-port-mismatch` • `05-helm-hook-test-roto` *(interactivo `helm test`)* • `06-helm-cli-upgrade-rollback` *(interactivo CLI)*
+* 🚀 [**Entrar a la Semana 06**](./semana-06-helm) | 🧪 [**Ir a los Ejemplos**](./semana-06-helm/1.ejemplos) | 💥 [**Resolver los Retos Rotos (+60 XP)**](./semana-06-helm/2.reto-roto)
 </details>
 
 <details>
@@ -488,7 +515,7 @@ flowchart LR
 > * **👨‍🍳 Barista:** La persona experta que prepara el café detrás de la barra y opera la cafetera (representa al **`kubelet`**).
 > * **🪵 Barismo / Mesa de barismo:** El *barismo* es el oficio de preparar café de calidad; la *mesa de barismo* es el mesón o estación de trabajo equipada con agua (**RAM**) y **cafeteras / máquinas de café** (**CPU**) donde trabaja el barista (representa un **`Worker Node`**).
 > * **📜 Tostador:** Quien cocina con calor (*tuesta*) y tritura (*muele*) el grano crudo para que quede listo para preparar (el proceso de **`docker build`** con tu **`Dockerfile`**).
-> * **🧾 Comanda:** El papelito u orden escrita donde se anota qué pidió el cliente en un restaurante (representa tu archivo **`.yaml`**).
+> * **🧾 Orden de pedido:** El papelito escrito donde se anota qué pidió el cliente en la cafetería (representa tu archivo **`.yaml`**).
 > * **📦 Inmutable:** Sellado de fábrica; no se puede abrir para modificar su contenido, sino que se fabrica un paquete nuevo con otra etiqueta (`v2`).
 
 | Concepto Técnico | Analogía del Café | ¿Cuál es su función? |
@@ -502,7 +529,7 @@ flowchart LR
 | **Kubelet** | 👨‍🍳 Barista de la mesa | Recibe órdenes de gerencia y cuida que las tazas no se enfríen. |
 | **Control Plane** | 🏢 Oficina de Gerencia | Coordina toda la cafetería sin servir café directamente. |
 | **kube-apiserver** | 🛎️ Caja / Mostrador | Ventanilla única: todos los pedidos y comandos entran aquí. |
-| **etcd** | 📖 Libro contable | Registro absoluto e inmutable de comandas, recetas y mesas. |
+| **etcd** | 📖 Libro contable | Registro absoluto e inmutable de órdenes, recetas y mesas. |
 | **kube-scheduler** | 📋 Despachador de mesas | Mira qué mesa tiene cafetera y agua libre para poner la taza. |
 | **Controller Manager** | 🧐 Supervisor de salón | Si una taza se derrama, ordena preparar otra inmediatamente. |
 | **Service** | 🤵 Mesero de barra fija | Atiende a los clientes con un menú fijo sin importar la taza concreta. |
@@ -645,9 +672,25 @@ Si no puedes instalar Docker Desktop o tu máquina no tiene suficiente memoria R
 <table>
   <tr>
     <td align="center" width="140">
+      <a href="./aportes-comunidad/soluciones-retos/Cuburi/README.md" title="Yorman Agudelo (@Cuburi) — 220 XP">
+        <img src="https://github.com/Cuburi.png?size=100" width="64" height="64" style="border-radius: 50%;" alt="Cuburi"/><br/>
+        <sub><b>🥇 Yorman Agudelo</b></sub>
+      </a><br/>
+      <sub>🧭 Timonel • <b>220 XP</b></sub><br/>
+      <sub><a href="./aportes-comunidad/soluciones-retos/Cuburi/README.md">🎓 Portafolio</a></sub>
+    </td>
+    <td align="center" width="140">
+      <a href="./aportes-comunidad/soluciones-retos/eandreaja/README.md" title="Andrea Jaramillo (@eandreaja) — 220 XP">
+        <img src="https://github.com/eandreaja.png?size=100" width="64" height="64" style="border-radius: 50%;" alt="eandreaja"/><br/>
+        <sub><b>🥈 Andrea Jaramillo</b></sub>
+      </a><br/>
+      <sub>🧭 Timonel • <b>220 XP</b></sub><br/>
+      <sub><a href="./aportes-comunidad/soluciones-retos/eandreaja/README.md">🎓 Portafolio</a></sub>
+    </td>
+    <td align="center" width="140">
       <a href="./aportes-comunidad/soluciones-retos/Arlex0296/README.md" title="Arlex0296 (@Arlex0296) — 190 XP">
         <img src="https://github.com/Arlex0296.png?size=100" width="64" height="64" style="border-radius: 50%;" alt="Arlex0296"/><br/>
-        <sub><b>🥇 Arlex0296</b></sub>
+        <sub><b>🥉 Arlex0296</b></sub>
       </a><br/>
       <sub>🧭 Timonel • <b>190 XP</b></sub><br/>
       <sub><a href="./aportes-comunidad/soluciones-retos/Arlex0296/README.md">🎓 Portafolio</a></sub>
@@ -655,25 +698,17 @@ Si no puedes instalar Docker Desktop o tu máquina no tiene suficiente memoria R
     <td align="center" width="140">
       <a href="./aportes-comunidad/soluciones-retos/RAVILA28/README.md" title="Fernando Avila (@RAVILA28) — 180 XP">
         <img src="https://github.com/RAVILA28.png?size=100" width="64" height="64" style="border-radius: 50%;" alt="RAVILA28"/><br/>
-        <sub><b>🥈 Fernando Avila</b></sub>
+        <sub><b>Fernando Avila</b></sub>
       </a><br/>
       <sub>🧭 Timonel • <b>180 XP</b></sub><br/>
       <sub><a href="./aportes-comunidad/soluciones-retos/RAVILA28/README.md">🎓 Portafolio</a></sub>
     </td>
     <td align="center" width="140">
-      <a href="./aportes-comunidad/soluciones-retos/Cuburi/README.md" title="Yorman Agudelo (@Cuburi) — 180 XP">
-        <img src="https://github.com/Cuburi.png?size=100" width="64" height="64" style="border-radius: 50%;" alt="Cuburi"/><br/>
-        <sub><b>🥉 Yorman Agudelo</b></sub>
-      </a><br/>
-      <sub>🧭 Timonel • <b>180 XP</b></sub><br/>
-      <sub><a href="./aportes-comunidad/soluciones-retos/Cuburi/README.md">🎓 Portafolio</a></sub>
-    </td>
-    <td align="center" width="140">
-      <a href="./aportes-comunidad/soluciones-retos/juanjosegonzalezrosales/README.md" title="Juan José González Rosales (@juanjosegonzalezrosales) — 170 XP">
+      <a href="./aportes-comunidad/soluciones-retos/juanjosegonzalezrosales/README.md" title="Juan José González Rosales (@juanjosegonzalezrosales) — 180 XP">
         <img src="https://github.com/juanjosegonzalezrosales.png?size=100" width="64" height="64" style="border-radius: 50%;" alt="juanjosegonzalezrosales"/><br/>
         <sub><b>Juan José</b></sub>
       </a><br/>
-      <sub>🧭 Timonel • <b>170 XP</b></sub><br/>
+      <sub>🧭 Timonel • <b>180 XP</b></sub><br/>
       <sub><a href="./aportes-comunidad/soluciones-retos/juanjosegonzalezrosales/README.md">🎓 Portafolio</a></sub>
     </td>
     <td align="center" width="140">
@@ -683,14 +718,6 @@ Si no puedes instalar Docker Desktop o tu máquina no tiene suficiente memoria R
       </a><br/>
       <sub>🧭 Timonel • <b>170 XP</b></sub><br/>
       <sub><a href="./aportes-comunidad/soluciones-retos/karolrojas68/README.md">🎓 Portafolio</a></sub>
-    </td>
-    <td align="center" width="140">
-      <a href="./aportes-comunidad/soluciones-retos/eandreaja/README.md" title="Andrea Jaramillo (@eandreaja) — 170 XP">
-        <img src="https://github.com/eandreaja.png?size=100" width="64" height="64" style="border-radius: 50%;" alt="eandreaja"/><br/>
-        <sub><b>Andrea Jaramillo</b></sub>
-      </a><br/>
-      <sub>🧭 Timonel • <b>170 XP</b></sub><br/>
-      <sub><a href="./aportes-comunidad/soluciones-retos/eandreaja/README.md">🎓 Portafolio</a></sub>
     </td>
   </tr>
   <tr>

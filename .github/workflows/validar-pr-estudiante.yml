@@ -11,15 +11,16 @@ permissions:
 jobs:
   validar-pr:
     name: Validar retos y archivos del PR
+    if: ${{ github.actor != 'dependabot[bot]' }}
     runs-on: ubuntu-24.04
     steps:
       - name: 📥 Clonar rama base confiable
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           ref: ${{ github.base_ref }}
 
       - name: 🔍 Verificar archivos modificados y evaluar retos
-        uses: actions/github-script@v9
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
         with:
           script: |
             const fs = require('fs');
@@ -141,7 +142,7 @@ jobs:
 
       - name: 📤 Subir reporte de validación
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:
           name: pr-validation-report
           path: /tmp/pr-report/report.json

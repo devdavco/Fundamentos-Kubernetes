@@ -1,0 +1,20 @@
+# 💥 Reto 01: LivenessProbe apuntando a ruta inexistente (HTTP 404)
+# Objetivo: Nginx responde HTTP 200 en '/' pero devuelve 404 en '/ruta-inexistente-999'.
+# Pista: Revisa 'kubectl describe pod reto-01-probe' y corrige livenessProbe.httpGet.path.
+apiVersion: v1
+kind: Pod
+metadata:
+  name: reto-01-probe
+spec:
+  containers:
+    - name: web
+      image: nginx:alpine
+      ports:
+        - containerPort: 80
+      livenessProbe:
+        httpGet:
+          path: /ruta-inexistente-999
+          port: 80
+        initialDelaySeconds: 2
+        periodSeconds: 3
+        failureThreshold: 2

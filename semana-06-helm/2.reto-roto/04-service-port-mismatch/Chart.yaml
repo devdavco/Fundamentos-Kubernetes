@@ -1,0 +1,6 @@
+apiVersion: v2
+name: reto-04-chart
+description: Reto 04 de Helm con Service desalineado
+type: application
+version: 0.1.0
+appVersion: "1.0.0"

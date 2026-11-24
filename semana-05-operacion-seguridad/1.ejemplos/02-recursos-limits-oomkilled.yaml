@@ -1,0 +1,36 @@
+# ⚡ Lab 2: Requests, Limits y Simulación Controlada de OOMKilled (Exit Code 137)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: oom-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: oom-demo
+  template:
+    metadata:
+      labels:
+        app: oom-demo
+    spec:
+      containers:
+        - name: stress-mem
+          image: python:3.12-alpine
+          command:
+            - python3
+            - -c
+            - |
+              import time
+              print("Iniciando consumo gradual de memoria...")
+              data = []
+              for i in range(10):
+                  data.append("A" * (5 * 1024 * 1024))
+                  time.sleep(1)
+              time.sleep(3600)
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "16Mi"
+            limits:
+              cpu: "200m"
+              memory: "32Mi"

@@ -1,0 +1,34 @@
+# ==============================================================================
+# 💥 RETO ROTO 03: NodePort Fuera de Rango Válido
+# Síntoma: Al ejecutar `kubectl apply`, el API Server rechaza el Service indicando:
+#          "provided port is not in the valid range. The range of valid ports is 30000-32767"
+# Objetivo: Asigna un `nodePort` válido (ej. 30090) dentro del rango permitido.
+# ==============================================================================
+
+# Solución del reto 03 (Andrea)
+#
+# Fallo original: el Service pedía nodePort: 8080, un puerto fuera del rango
+# que Kubernetes reserva para NodePort (30000-32767). El API Server rechazó el
+# Service y no se creó nada.
+#
+# Cómo lo descubrí: 'kubectl apply -f' respondió "spec.ports[0].nodePort:
+# Invalid value: 8080: provided port is not in the valid range. The range of
+# valid ports is 30000-32767", y 'kubectl get svc vitrina-svc' dio NotFound.
+#
+# Ajuste: cambié el nodePort a 30001, que está dentro del rango. No toqué
+# 'port' ni 'targetPort'. Este archivo no crea pods con la etiqueta
+# app: kubecafe-menu, así que el Service queda sin endpoints; el reto solo
+# trata del rango del nodePort.
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: vitrina-svc
+spec:
+  type: NodePort
+  selector:
+    app: kubecafe-menu
+  ports:
+    - port: 80
+      targetPort: 80
+      nodePort: 30001

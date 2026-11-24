@@ -1,0 +1,21 @@
+# 💥 Reto 02: Variable mal escrita en Go Template
+# Pista: Mira values.yaml -> la clave se llama 'image', NO 'imagen'.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-reto-02
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: reto-02
+  template:
+    metadata:
+      labels:
+        app: reto-02
+    spec:
+      containers:
+        - name: web
+          image: "{{ .Values.image.repository }}:{{ .Values.imagen.tag }}"
+          ports:
+            - containerPort: 80

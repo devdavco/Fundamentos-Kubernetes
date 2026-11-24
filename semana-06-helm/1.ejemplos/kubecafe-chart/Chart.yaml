@@ -1,0 +1,6 @@
+apiVersion: v2
+name: kubecafe-chart
+description: Chart oficial de ejemplo para KubeCafé (Semana 06 - Helm)
+type: application
+version: 0.1.0
+appVersion: "1.0.0"

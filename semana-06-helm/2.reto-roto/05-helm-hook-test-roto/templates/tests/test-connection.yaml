@@ -1,0 +1,17 @@
+# 💥 Reto 05 (Interactivo con helm test): El hook de prueba apunta al puerto equivocado
+# 1. Instala el release: helm install r5 .
+# 2. Ejecuta: helm test r5 --logs  (verás que falla conectándose al puerto 9999)
+# 3. Corrige el puerto usando {{ .Values.service.port }} y vuelve a probar hasta ver Phase: Succeeded.
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ .Release.Name }}-test-connection"
+  annotations:
+    "helm.sh/hook": test
+spec:
+  restartPolicy: Never
+  containers:
+    - name: wget
+      image: busybox:1.36
+      command: ["wget"]
+      args: ["-qO-", "http://{{ .Release.Name }}-reto-05-svc:9999"]

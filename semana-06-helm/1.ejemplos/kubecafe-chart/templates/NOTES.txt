@@ -1,0 +1,6 @@
+☕ ¡Release {{ .Release.Name }} de KubeCafé desplegado con Helm!
+- Réplicas activas: {{ .Values.replicaCount }}
+- Servicio: {{ .Release.Name }}-svc ({{ .Values.service.type }}:{{ .Values.service.port }})
+
+Para probar la conectividad ejecuta:
+  helm test {{ .Release.Name }} --logs

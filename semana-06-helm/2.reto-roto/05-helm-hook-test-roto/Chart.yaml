@@ -1,0 +1,6 @@
+apiVersion: v2
+name: reto-05-chart
+description: Reto 05 interactivo con helm test hook roto
+type: application
+version: 0.1.0
+appVersion: "1.0.0"

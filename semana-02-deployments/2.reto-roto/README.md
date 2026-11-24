@@ -12,8 +12,8 @@ Cada reto resuelto te otorga **+10 XP** (hasta **+40 XP** en total) para subir d
 | :-: | :--- | :---: | :--- | :--- |
 | **01** | [`01-deployment-selector-roto.yaml`](./01-deployment-selector-roto.yaml) | 🟢 Principiante | El selector no coincide con las etiquetas del template | El Supervisor busca bandejas de té en vez de las de café. |
 | **02** | [`02-deployment-imagen-caida-rollback.yaml`](./02-deployment-imagen-caida-rollback.yaml) | 🟡 Intermedio | Imagen inexistente y despliegue bloqueado (`0/3 READY`) | Se pide un café que no existe y las mesas quedan vacías. |
-| **03** | [`03-deployment-estrategia-invalida.yaml`](./03-deployment-estrategia-invalida.yaml) | 🟡 Intermedio | Sintaxis y anidamiento incorrecto en `RollingUpdate` | La comanda tiene mal escritas las reglas de reemplazo. |
-| **04** | [`04-deployment-yaml-identacion.yaml`](./04-deployment-yaml-identacion.yaml) | 🔴 Ninja | Indentación rota y `apiVersion` incorrecto | La comanda está mal doblada y la Caja no puede leerla. |
+| **03** | [`03-deployment-estrategia-invalida.yaml`](./03-deployment-estrategia-invalida.yaml) | 🟡 Intermedio | Sintaxis y anidamiento incorrecto en `RollingUpdate` | La orden tiene mal escritas las reglas de reemplazo. |
+| **04** | [`04-deployment-yaml-identacion.yaml`](./04-deployment-yaml-identacion.yaml) | 🔴 Ninja | Indentación rota y `apiVersion` incorrecto | La orden está mal estructurada y la Caja no puede leerla. |
 
 ---
 

@@ -41,22 +41,22 @@ cd Fundamentos-Kubernetes
 
 ## ⚖️ 1. Modo Imperativo (Interactivo) vs. Modo Declarativo
 
-En Kubernetes existen dos filosofías para crear y administrar recursos. En [**☕ KubeCafé**](../../recursos/de-un-tinto-a-kubernetes.md), imagínalo como la diferencia entre **gritarle un pedido rápido al cajero** vs. **entregar la comanda oficial impresa y archivada en el Libro Contable (`etcd`)**:
+En Kubernetes existen dos filosofías para crear y administrar recursos. En [**☕ KubeCafé**](../../recursos/de-un-tinto-a-kubernetes.md), imagínalo como la diferencia entre **gritarle un pedido rápido al cajero** vs. **entregar la orden oficial impresa y archivada en el Libro Contable (`etcd`)**:
 
 ```mermaid
 flowchart LR
     subgraph Imperativo ["⚡ Modo Imperativo / Interactivo (Pedido a viva voz)"]
         I1["👤 Ingeniero"] -->|"k run / k create / k edit\n(Cómo hacerlo paso a paso)"| API1["🛎️ kube-apiserver (Caja)"]
     end
-    subgraph Declarativo ["📜 Modo Declarativo (Comanda Oficial en Git)"]
-        D1["👤 Ingeniero"] -->|"Escribe estado deseado"| Y["📄 archivo.yaml (Comanda)"]
+    subgraph Declarativo ["📜 Modo Declarativo (Orden Oficial en Git)"]
+        D1["👤 Ingeniero"] -->|"Escribe estado deseado"| Y["📄 archivo.yaml (Orden)"]
         Y -->|"k apply -f archivo.yaml\n(Qué bandeja final quiero)"| API2["🛎️ kube-apiserver (Caja)"]
     end
 ```
 
 | Característica | ⚡ Modo Imperativo / Interactivo | 📜 Modo Declarativo |
 | :--- | :--- | :--- |
-| **En ☕ KubeCafé** | Pides en el mostrador a viva voz: *"¡Sírvanme un expreso rápido!"*. | Entregas una comanda escrita y firmada con la receta exacta que queda archivada. |
+| **En ☕ KubeCafé** | Pides en el mostrador a viva voz: *"¡Sírvanme un expreso rápido!"*. | Entregas una orden escrita y firmada con la receta exacta que queda archivada. |
 | **¿Qué le dices a K8s?** | **Cómo** hacer algo mediante órdenes directas en la terminal. | **Qué** estado final deseas alcanzar descrito en un archivo `.yaml`. |
 | **Comandos típicos** | `k run`, `k create`, `k expose`, `k scale`, `k edit`, `k delete pod X` | `k apply -f archivo.yaml`, `k diff -f archivo.yaml`, `k delete -f archivo.yaml` |
 | **Trazabilidad / Auditoría** | ❌ Baja (si no guardas el comando, nadie sabe qué cambiaste). | ✅ Alta (el archivo YAML vive en Git con historial de commits y PRs). |
@@ -252,7 +252,7 @@ k delete -f .
 * **Archivo YAML:** [`01-mi-primer-pod.yaml`](./01-mi-primer-pod.yaml)
 * **Nombre del Pod en el clúster:** **`hola-medellin`**
 * **Contenedor:** `servidor-web` (`nginx:alpine` escuchando en puerto `80`)
-* **En ☕ KubeCafé:** Es la comanda más sencilla: una bandeja (`Pod`) con una sola taza de café (`servidor-web`).
+* **En ☕ KubeCafé:** Es la orden más sencilla: una bandeja (`Pod`) con una sola taza de café (`servidor-web`).
 
 ### 🚀 Paso a Paso de Ejecución:
 

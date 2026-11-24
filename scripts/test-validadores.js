@@ -34,7 +34,7 @@ function readFilesRecursively(dir, baseDir = dir) {
 }
 
 const official = discoverOfficialChallenges();
-for (const weekKey of ['semana-00', 'semana-01', 'semana-02', 'semana-03', 'semana-04']) {
+for (const weekKey of ['semana-00', 'semana-01', 'semana-02', 'semana-03', 'semana-04', 'semana-05', 'semana-06']) {
   assert(official[weekKey], `Falta descubrir ${weekKey} en discoverOfficialChallenges()`);
 }
 
@@ -52,7 +52,7 @@ for (const weekKey of Object.keys(CHALLENGE_VALIDATORS)) {
 
   for (const v of CHALLENGE_VALIDATORS[weekKey]) {
     const targetFiles =
-      weekKey === 'semana-00'
+      weekKey === 'semana-00' || weekKey === 'semana-06'
         ? brokenFiles.filter(f => f.relPath.startsWith(`${v.id}-`))
         : brokenFiles;
     const passed = v.validate(targetFiles);

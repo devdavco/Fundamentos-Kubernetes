@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; object-src 'none'; base-uri 'self';">
     <title>Simulador Interactivo de Arquitectura Kubernetes — De Cero a Capitán (KubeCafé)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -989,7 +990,7 @@
                         packetText: "PodSpec + Config",
                         podStatus: "ContainerCreating",
                         podVisualState: "creating",
-                        cafeDesc: "El Barista de la Mesa 1 recibe la comanda de la Caja, alista las especias (ConfigMap), saca la receta secreta (Secret) y prepara los insumos.",
+                        cafeDesc: "El Barista de la Mesa 1 recibe la orden de la Caja, alista las especias (ConfigMap), saca la receta secreta (Secret) y prepara los insumos.",
                         simpleDesc: "El agente Kubelet que vive dentro de 'worker-node-01' ve que le asignaron 2 Pods nuevos. Descarga sus variables de configuración (ConfigMap/Secret) y prepara los volúmenes.",
                         techDesc: "kubelet recibe el evento Watch del API Server para su nodo, monta en memoria (tmpfs) los Secrets y ConfigMaps requeridos, conecta volúmenes PVC y llama al runtime vía CRI (Container Runtime Interface).",
                         yamlCode: `# kubelet preparando el entorno del Pod:\nVolumes Mounted:\n  - configmap/app-config -> /etc/config\n  - secret/db-creds      -> /var/run/secrets\nStatus: ContainerCreating`,

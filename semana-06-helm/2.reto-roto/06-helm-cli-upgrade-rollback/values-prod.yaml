@@ -1,0 +1,5 @@
+# 💥 Reto 06: Cambia esta etiqueta rota por 'alpine' después de practicar el rollback
+replicaCount: 2
+image:
+  repository: nginx
+  tag: version-fantasma-999

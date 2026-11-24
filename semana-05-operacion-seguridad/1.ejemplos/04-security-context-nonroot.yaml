@@ -1,0 +1,28 @@
+# 🛡️ Lab 4: SecurityContext Endurecido (Non-Root + ReadOnly RootFS + Drop ALL)
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-endurecido
+spec:
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 10001
+    runAsGroup: 10001
+    seccompProfile:
+      type: RuntimeDefault
+  containers:
+    - name: app
+      image: busybox:1.36
+      command: ["sh", "-c", "id && sleep 3600"]
+      securityContext:
+        allowPrivilegeEscalation: false
+        readOnlyRootFilesystem: true
+        capabilities:
+          drop:
+            - ALL
+      volumeMounts:
+        - name: tmp-writable
+          mountPath: /tmp
+  volumes:
+    - name: tmp-writable
+      emptyDir: {}

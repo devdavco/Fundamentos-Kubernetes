@@ -20,7 +20,7 @@ En esta guía usamos algunos términos propios de las cafeterías y restaurantes
 | **👨‍🍳 Barista** | Es la **persona que prepara el café** detrás de la barra y maneja la máquina cafetera. | Representa al **`kubelet`**: el agente encargado dentro de cada servidor de encender y cuidar tus contenedores. |
 | **🪵 Barismo / Mesa de barismo** | El *barismo* es el oficio de preparar buen café. Una **mesa de barismo** es el **mesón o estación de trabajo** donde están conectadas las cafeteras y el agua para preparar las bebidas. | Representa a un **`Worker Node` (Nodo trabajador)**: el servidor físico o virtual que aporta **CPU** (cafeteras / máquinas de café) y **RAM** (agua). |
 | **📜 Tostador / Tostar y moler** | El café recién cosechado es un grano verde y duro. El **tostador** es quien lo cocina con calor (*tostar*) y lo tritura (*moler*) para que quede listo para colar. | Representa el proceso de **construir tu aplicación (`docker build`)** siguiendo las instrucciones del **`Dockerfile`**. |
-| **🧾 Comanda** | En los restaurantes, es el **papelito u orden escrita** donde se anota exactamente qué pidió el cliente para pasarlo a la cocina. | Representa tu **archivo manifiesto `.yaml`** donde escribes qué quieres desplegar en el clúster. |
+| **🧾 Orden de pedido** | En una cafetería, es el **papelito u orden escrita** donde se anota exactamente qué pidió el cliente para pasarlo a la barra. | Representa tu **archivo manifiesto `.yaml`** donde escribes qué quieres desplegar en el clúster. |
 | **📦 Inmutable (Sellado al vacío)** | Significa que una vez cerrada la bolsa en la fábrica, **nadie puede abrirla para meterle ni quitarle nada**; si quieres otra mezcla, fabricas una bolsa nueva con otra etiqueta. | Así funcionan las **Imágenes de Docker**: nunca se editan por dentro; siempre se construye una versión nueva (`v1`, `v2`). |
 | **🥛 Acompañante (*Sidecar*)** | En muchas cafeterías te sirven la taza de café acompañada de un **vasito de agua** en la misma bandeja. | Es un **contenedor secundario (*Sidecar*)** que vive dentro del mismo **`Pod`** (bandeja) para apoyar al contenedor principal (ej. enviar logs o cifrar tráfico). |
 | **🚪 Puerta y Recepción (*Gateway & HTTPRoute*)** | La **puerta principal** recibe al cliente de la calle y la **recepción** te indica hacia qué salón o barra caminar según lo que vayas a pedir. | Representa a **Gateway API (`Gateway` + `HTTPRoute`)**: la evolución oficial del antiguo `Ingress`, que separa la puerta de entrada con TLS (`Gateway`) de las reglas web (`/pagos`, `/catalogo`) en `HTTPRoute`. |
@@ -41,7 +41,7 @@ En esta guía usamos algunos términos propios de las cafeterías y restaurantes
 | **S01** | **Kubelet** | 👨‍🍳 Barista de la mesa | Recibe órdenes de la gerencia, prepara la bandeja y vigila que las tazas no se enfríen. |
 | **S01** | **Control Plane** | 🏢 Oficina de Gerencia | Coordina toda la cafetería sin preparar café directamente. |
 | **S01** | **kube-apiserver** | 🛎️ Caja / Mostrador | Ventanilla única: todos los pedidos (`kubectl`) y reportes entran y salen por aquí. |
-| **S01** | **etcd** | 📖 Libro contable | Registro absoluto, oficial e inmutable de todas las comandas, recetas y estado de las mesas. |
+| **S01** | **etcd** | 📖 Libro contable | Registro absoluto, oficial e inmutable de todas las órdenes, recetas y estado de las mesas. |
 | **S01** | **kube-scheduler** | 📋 Despachador de mesas | Revisa qué mesa de barismo tiene cafetera (CPU) y agua (RAM) libre para asignar la bandeja. |
 | **S01** | **Controller Manager** | 🧐 Supervisor de salón | Vigila que todo coincida con el libro contable; si una taza se derrama, ordena otra al instante. |
 | **S02** | **Deployment y ReplicaSet** | 📝 Orden de Producción | *"Mantengan siempre 3 bandejas listas en barra"* y actualicen la receta sin cerrar el local (*Rolling Update*). |
@@ -162,7 +162,7 @@ En **KubeCafé** está prohibido dejar tazas sueltas por ahí. Toda bebida se si
   Son las estaciones físicas donde trabajan los **👨‍🍳 Baristas (`kubelet`)**. Cada mesa tiene un límite de agua (**RAM**) y de cafeteras (**CPU**).
 * **🏢 La Oficina de Gerencia (`Control Plane`):**  
   Cuando tú (`kubectl`) pides una bandeja:
-  1. Entregas la comanda en la **🛎️ Caja Registradora (`kube-apiserver`)** (en **modo imperativo** dando la orden verbalmente con `k run`, o en **modo declarativo** entregando el formulario oficial impreso con `k apply -f`).
+  1. Entregas la orden en la **🛎️ Caja Registradora (`kube-apiserver`)** (en **modo imperativo** dando la orden verbalmente con `k run`, o en **modo declarativo** entregando el formulario oficial impreso con `k apply -f`).
   2. La Caja la anota en el **📖 Libro Contable (`etcd`)**.
   3. El **📋 Despachador (`kube-scheduler`)** revisa qué mesa tiene espacio y asigna la tarea.
   4. El **👨‍🍳 Barista (`kubelet`)** de esa mesa abre la **📦 Bolsa de café (`Imagen`)** y sirve la **🍽️ Bandeja (`Pod`)**.
@@ -213,7 +213,7 @@ Una cafetería profesional necesita estándares de calidad, control de costos y 
   * **`livenessProbe` (¿Sigue caliente el café?):** Si el café se enfrió o la máquina se trabó, el barista retira la taza y sirve una fresca automáticamente.
   * **`startupProbe` (Tiempo de precalentamiento):** Espera con paciencia mientras la máquina de expreso calienta el agua al inicio de la mañana.
 * **⚖️ Dosificadores (`requests` y `limits`):** Garantizan que cada bandeja tenga su mínima agua asegurada (`requests`) y que ninguna taza desbordada gaste toda el agua de la mesa (`limits` / `OOMKilled`).
-* **🪪 Carnets de Personal (`RBAC`):** El barista puede ver comandas de su mesa, pero solo el Gerente tiene llave para modificar el Libro Contable o borrar sucursales.
+* **🪪 Carnets de Personal (`RBAC`):** El barista puede ver órdenes de su mesa, pero solo el Gerente tiene llave para modificar el Libro Contable o borrar sucursales.
 </details>
 
 <details>
@@ -291,7 +291,7 @@ kubectl describe pod <nombre-del-pod>
 <br>
 
 ✅ **Respuesta:** El Pod se queda en estado **`Pending` (Pendiente)** indefinidamente.  
-El **📋 Despachador (`kube-scheduler`)** busca en todas las mesas (`Worker Nodes`), ve que ninguna tiene `64 CPUs` libres (`Insufficient cpu`) y deja la comanda en sala de espera hasta que ajustes los `resources.requests` o agregues una mesa más grande.
+El **📋 Despachador (`kube-scheduler`)** busca en todas las mesas (`Worker Nodes`), ve que ninguna tiene `64 CPUs` libres (`Insufficient cpu`) y deja la orden en sala de espera hasta que ajustes los `resources.requests` o agregues una mesa más grande.
 </details>
 
 <details>

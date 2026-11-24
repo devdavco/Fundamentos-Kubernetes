@@ -8,6 +8,10 @@ permissions:
   contents: write
   issues: write
 
+concurrency:
+  group: write-main
+  cancel-in-progress: false
+
 jobs:
   procesar-registro:
     name: Procesar Formulario y Actualizar Ranking
@@ -15,14 +19,14 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: 📥 Clonar repositorio
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           ref: ${{ github.event.repository.default_branch }}
           fetch-depth: 0
 
       - name: 🛠️ Extraer datos del formulario y actualizar asistentes.json + ASISTENTES.md + README.md
         id: registro
-        uses: actions/github-script@v9
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
         with:
           script: |
             const fs = require('fs');
@@ -118,7 +122,7 @@ jobs:
           ACTION_TYPE: ${{ steps.registro.outputs.action_type }}
 
       - name: 🎉 Confirmar registro y cerrar el Issue
-        uses: actions/github-script@v9
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
         env:
           GH_USER: ${{ steps.registro.outputs.user }}
           NOMBRE: ${{ steps.registro.outputs.nombre }}
